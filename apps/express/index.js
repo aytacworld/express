@@ -25,7 +25,7 @@ module.exports = class Express {
 
     if (options.oauthServer) {
       oauth = new options.oauthServer.module(options.authDatabase);
-      options.routes.push({route: options.oauthServer.route, path: oauth.routes()});
+      options.routes.push({ route: options.oauthServer.route, path: oauth.routes() });
     }
 
     const app = express();
@@ -62,8 +62,8 @@ module.exports = class Express {
     this.app = app;
   }
 
-  listen(httpOptions) {
-    require('http').createServer(this.app).listen(httpOptions);
+  listen(httpOptions, cb = () => { console.log('port', httpOptions) }) {
+    require('http').createServer(this.app).listen(httpOptions, cb);
   }
 
   randomSecret(charQuantity = Math.floor(Math.random() * 20)) {

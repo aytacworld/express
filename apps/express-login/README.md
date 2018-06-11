@@ -37,7 +37,8 @@ const app = new Express({
 ```javascript
 {
   users: {
-    findByUsername(username, (error, user) => void),
+    findById(id, (error, user) => void),
+    findByUsername(username, (error, user) => void)
   }
 }
 ```
@@ -49,6 +50,40 @@ User structure
   username: string, // Username, be sure to check the uniqueness of the username
   password: string // The password field is plain text, so you have been warned.
 }
+```
+
+## Example user database (in Memory)
+
+```javascript
+const records = {
+  '1': {id:'1', username:'bob', password:'secret'},
+  '2': {id:'2', username:'jake', password:'blablabla'}
+};
+class Users {
+  findById(id, cb) {
+    process.nextTick(() => {
+      if (records[id]) {
+        cb(null, records[id]);
+      } else {
+        cb(new Error('User ' + id + ' does not exist'));
+      }
+    });
+  }
+
+  findByUsername(username, cb) {
+    process.nextTick(() => {
+      for (const id in records) {
+        const record = records[id];
+        if (record.username === username) {
+          return cb(null, record);
+        }
+      }
+      return cb(null, null);
+    });
+  }
+}
+
+module.exports = { users: new Users() };
 ```
 
 ## License
