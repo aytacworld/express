@@ -1,6 +1,6 @@
 {
   "name": "@aytacworld/express",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Eliminating Express boilerplate code",
   "main": "index.js",
   "repository": "https://github.com/aytacworld/aytacworld",

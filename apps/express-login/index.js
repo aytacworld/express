@@ -6,11 +6,26 @@ const BearerStrategy = require('passport-http-bearer').Strategy;
 
 class Login {
   constructor(db, useOauthServer) {
-    passport.use(new LocalStrategy(this.verify(db.users.findByUsername, 'password')));
+    passport.use(new LocalStrategy(async (username, password, cb) => {
+      try {
+        const user = await db.users.findByUsername(username);
+        if (!user || user.password !== password) return cb(null, false);
+        cb(null, user);
+      } catch (err) {
+        cb(err);
+      }
+    }));
 
     passport.serializeUser((user, cb) => cb(null, user.id));
 
-    passport.deserializeUser((id, cb) => db.users.findById(id, (err, user) => cb(err, user)));
+    passport.deserializeUser(async (id, cb) => {
+      try {
+        const user = await db.users.findById(id);
+        cb(null, user);
+      } catch (err) {
+        cb(err);
+      }
+    });
 
     if (useOauthServer) {
       passport.use(new BasicStrategy(this.verify(db.clients.findByClientId, 'clientSecret')));
