@@ -4,63 +4,50 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 
+function strategyCallback(findFunc, secretField) {
+  return async (id, secret, cb) => {
+    try {
+      const item = await findFunc(id);
+      cb(null, (!item || item[secretField] !== secret) ? false : item);
+    } catch (err) {
+      cb(err);
+    }
+  }
+}
+
 class Login {
   constructor(db, useOauthServer) {
-    passport.use(new LocalStrategy(async (username, password, cb) => {
-      try {
-        const user = await db.users.findByUsername(username);
-        if (!user || user.password !== password) return cb(null, false);
-        cb(null, user);
-      } catch (err) {
-        cb(err);
-      }
-    }));
+    passport.use(new LocalStrategy(strategyCallback(db.users.findByUsername, 'password')));
 
     passport.serializeUser((user, cb) => cb(null, user.id));
 
     passport.deserializeUser(async (id, cb) => {
       try {
-        const user = await db.users.findById(id);
-        cb(null, user);
+        cb(null, await db.users.findById(id));
       } catch (err) {
         cb(err);
       }
     });
 
     if (useOauthServer) {
-      passport.use(new BasicStrategy(this.verify(db.clients.findByClientId, 'clientSecret')));
+      passport.use(new BasicStrategy(strategyCallback(db.clients.findByClientId, 'clientSecret')));
+      passport.use(new ClientPasswordStrategy(strategyCallback(db.clients.findByClientId, 'clientSecret')));
 
-      passport.use(new ClientPasswordStrategy(this.verify(db.clients.findByClientId, 'clientSecret')));
-
-      passport.use(new BearerStrategy(
-        (accessToken, done) => {
-          db.accessTokens.find(accessToken, (error, token) => {
-            if (error) return done(error);
-            if (!token) return done(null, false);
-            if (token.userId) db.users.findById(token.userId, this.bearerCallback(done));
-            else db.clients.findByClientId(token.clientId, this.bearerCallback(done));
-          });
+      passport.use(new BearerStrategy(async (accessToken, done) => {
+        try {
+          const token = await db.accessTokens.find(accessToken);
+          if (!token) done(null, false);
+          else {
+            const consumer = token.userId ?
+              await db.users.findById(token.userId) :
+              await db.clients.findByClientId(token.clientId);
+            if (!consumer) done(null, false);
+            else done(null, consumer, { scope: '*' });
+          }
+        } catch (err) {
+          done(err);
         }
-      ));
-    }
-  }
-
-  verify(findFunction, secretField) {
-    return (id, secret, done) => {
-      findFunction(id, (error, record) => {
-        if (error) return done(error);
-        if (!record) return done(null, false);
-        if (record[secretField] !== secret) return done(null, false);
-        return done(null, record);
-      });
-    };
-  }
-
-  bearerCallback(done) {
-    return (error, consumer) => {
-      if (error) return done(error);
-      if (!consumer) return done(null, false);
-      done(null, consumer, { scope: '*' });
+      }));
     }
   }
 }
@@ -68,4 +55,4 @@ class Login {
 module.exports = {
   Login,
   passport
-}
+};

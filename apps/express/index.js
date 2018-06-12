@@ -10,6 +10,7 @@ module.exports = class Express {
   constructor(options = {}) {
 
     let oauth = undefined;
+    const viewLocations = [];
 
     // Checking options
     options.templatePath = options.templatePath || './';
@@ -18,6 +19,7 @@ module.exports = class Express {
     options.login = options.login || false;
     options.oauthServer = options.oauthServer || false;
     options.authDatabase = options.authDatabase || false;
+    options.authDecisionPage = options.authDecisionPage || undefined;
 
     if (options.login) {
       new options.login.Login(options.authDatabase, Boolean(options.oauthServer));
@@ -26,6 +28,7 @@ module.exports = class Express {
     if (options.oauthServer) {
       oauth = new options.oauthServer.module(options.authDatabase);
       options.routes.push({ route: options.oauthServer.route, path: oauth.routes() });
+      viewLocations.push(options.authDecisionPage);
     }
 
     const app = express();
@@ -45,7 +48,8 @@ module.exports = class Express {
     }
 
     if (Boolean(options.templatePath)) {
-      app.set('views', options.templatePath);
+      viewLocations.push(options.templatePath);
+      app.set('views', viewLocations);
       app.set('view engine', 'pug');
     }
 
