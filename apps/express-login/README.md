@@ -37,8 +37,8 @@ const app = new Express({
 ```javascript
 {
   users: {
-    findById(id, (error, user) => void),
-    findByUsername(username, (error, user) => void)
+    findById(id): Promise,
+    findByUsername(username): Promise
   }
 }
 ```
@@ -60,35 +60,26 @@ const records = {
   '2': {id:'2', username:'jake', password:'blablabla'}
 };
 class Users {
-  findById(id, cb) {
-    process.nextTick(() => {
-      if (records[id]) {
-        cb(null, records[id]);
-      } else {
-        cb(new Error('User ' + id + ' does not exist'));
-      }
-    });
+  static async findById(id) {
+     return new Promise((res, rej) => records[id] ? res(records[id]) : rej(new Error('User ' + id + ' does not exist')));
   }
 
-  findByUsername(username, cb) {
-    process.nextTick(() => {
+  static async findByUsername(username) {
+    return new Promise((res) => {
       for (const id in records) {
-        const record = records[id];
-        if (record.username === username) {
-          return cb(null, record);
+        if (records[id].username === username) {
+          return res(records[id]);
         }
       }
-      return cb(null, null);
+      return res();
     });
   }
 }
 
-module.exports = { users: new Users() };
+module.exports = { users: Users };
 ```
 
-## License
-
-MIT License
+## MIT License
 
 Copyright (c) 2018 Adem Aytaç
 

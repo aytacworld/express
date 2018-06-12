@@ -9,9 +9,7 @@ This repo contains the following packages
 - @aytacworld/express-oauth
   Adding a oauth server code
 
-## License
-
-MIT License
+## MIT License
 
 Copyright (c) 2018 Adem Aytaç
 

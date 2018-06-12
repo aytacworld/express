@@ -34,7 +34,7 @@ const app = new Express({
   ],
   staticPath: {route: 'public', path: path.resolve(__dirname, 'public-folder')}
 });
-app.listen();
+app.listen(process.env.PORT);
 // you can also pass http options
 // this method is the same as require('http').createServer(this.app).listen(httpOptions);
 ```
@@ -52,9 +52,7 @@ app.listen();
 }
 ```
 
-## License
-
-MIT License
+## MIT License
 
 Copyright (c) 2018 Adem Aytaç
 
