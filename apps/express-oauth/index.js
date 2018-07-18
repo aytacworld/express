@@ -101,7 +101,7 @@ class OAuth2 {
       }
     }));
 
-    server.exchange(oauth2orize.exchange.clientCredentials((client, scope, done) => {
+    server.exchange(oauth2orize.exchange.clientCredentials(async (client, scope, done) => {
       try {
         // Validate the client
         const localClient = await this.db.clients.findByClientId(client.clientId)
@@ -172,6 +172,4 @@ class OAuth2 {
   }
 }
 
-module.exports = {
-  OAuth2
-};
+module.exports = OAuth2;
