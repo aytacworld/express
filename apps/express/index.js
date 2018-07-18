@@ -28,7 +28,9 @@ module.exports = class Express {
     if (options.oauthServer) {
       oauth = new options.oauthServer.module(options.authDatabase);
       options.routes.push({ route: options.oauthServer.route, path: oauth.routes() });
-      viewLocations.push(options.authDecisionPage);
+      if (options.authDecisionPage){
+        viewLocations.push(options.authDecisionPage);
+      }
     }
 
     const app = express();
