@@ -37,8 +37,8 @@ const app = new Express({
 ```javascript
 {
   users: {
-    findById(id): Promise,
-    findByUsername(username): Promise
+    static findById(id): Promise,
+    static findByUsername(username): Promise
   }
 }
 ```

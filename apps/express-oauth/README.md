@@ -31,20 +31,20 @@ const app = new Express({
 ```javascript
 {
   users: {
-    findByUsername(username): Promise
+    static findByUsername(username): Promise
   },
   clients: {
-    findById(id): Promise,
-    findByClientId(clientId): Promise
+    static findById(id): Promise,
+    static findByClientId(clientId): Promise
   },
   accessTokens: {
-    find(token): Promise,
-    findByUserIdAndClientId(userId, clientId): Promise,
-    save(token, userId, clientId): Promise
+    static find(token): Promise,
+    static findByUserIdAndClientId(userId, clientId): Promise,
+    static save(token, userId, clientId): Promise
   },
   authorizationCodes: {
-    find(code): Promise,
-    save(code, clientId, redirectUri, userId): Promise
+    static find(code): Promise,
+    static save(code, clientId, redirectUri, userId): Promise
   }
 }
 ```
