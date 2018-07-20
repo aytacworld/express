@@ -1,15 +1,32 @@
-# @Aytacworld
+# @Aytacworld/express-database-mongo
 
-This repo contains the following packages
+This module contains the database models(Schema) for [@aytacworld/express-login](https://www.npmjs.com/package/@aytacworld/express-login) and [@aytacworld/express-oauth](https://www.npmjs.com/package/@aytacworld/express-oauth).
 
-- @aytacworld/express
-  Eliminating default express boilerplate code
-- @aytacworld/express-login
-  Adding passport functionality
-- @aytacworld/express-oauth
-  Adding a oauth server code
-- @aytacworld/express-database-mongo
-  Database needed for login and oauth plugins
+When requiring just past in the connectionstring to your mongoDB Server.
+
+## Installation
+
+using npm
+
+`npm i @aytacworld/express-database-mongo`
+
+using yarn
+
+`yarn add @aytacworld/express-database-mongo`
+
+## Usage
+
+app.js
+```javascript
+...
+const ExpressDatabase = require('@aytacworld/express-database-mongo')('mongodb://localhost:27017/auth');
+
+const app = new Express({
+  ...
+  authDatabase: ExpressDatabase,
+  ...
+});
+```
 
 ## MIT License
 

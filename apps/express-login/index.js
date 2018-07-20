@@ -17,6 +17,7 @@ function strategyCallback(findFunc, secretField) {
 
 class Login {
   constructor(db, useOauthServer) {
+    // TODO compare the hashed password
     passport.use(new LocalStrategy(strategyCallback(db.users.findByUsername, 'password')));
 
     passport.serializeUser((user, cb) => cb(null, user.id));
