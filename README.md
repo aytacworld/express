@@ -11,6 +11,11 @@ This repo contains the following packages
 - @aytacworld/express-database-mongo
   Database needed for login and oauth plugins
 
+## TODO
+
+- eslint all files
+- testing
+
 ## MIT License
 
 Copyright (c) 2018 Adem Aytaç
