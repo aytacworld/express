@@ -1,9 +1,9 @@
 {
   "name": "@aytacworld/express-login",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Adding login feature to express server",
   "main": "index.js",
-  "repository": "https://github.com/aytacworld/aytacworld",
+  "repository": "https://github.com/aytacworld/express",
   "author": "Adem Aytaç <adem@aytacworld.com> (https://aytacworld.com)",
   "license": "MIT",
   "dependencies": {

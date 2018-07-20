@@ -1,11 +1,11 @@
 {
   "private": true,
-  "repository": "https://github.com/aytacworld/aytacworld",
+  "repository": "https://github.com/aytacworld/express",
   "author": "Adem Aytaç <adem@aytacworld.com> (https://aytacworld.com)",
   "license": "MIT",
   "dependencies": {
   },
   "workspaces": [
-    "apps/*/"
+    "apps/*"
   ]
 }
