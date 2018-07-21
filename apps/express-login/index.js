@@ -4,11 +4,11 @@ const { BasicStrategy } = require('passport-http');
 const ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 
-function strategyCallback(findFunc, secretField) {
+function strategyCallback() {
   return async (id, secret, cb) => {
     try {
-      const item = await findFunc(id);
-      cb(null, (!item || item[secretField] !== secret) ? false : item);
+      const client = await db.clients.findByClientId(id);
+      cb(null, (!client || client.clientSecret !== secret) ? false : client);
     } catch (err) {
       cb(err);
     }
@@ -17,8 +17,13 @@ function strategyCallback(findFunc, secretField) {
 
 class Login {
   constructor(db, useOauthServer) {
-    // TODO compare the hashed password
-    passport.use(new LocalStrategy(strategyCallback(db.users.findByUsername, 'password')));
+    passport.use(new LocalStrategy(async (username, password, cb) => {
+      try {
+        cb(null, await db.users.comparePassword(username, password));
+      } catch (err) {
+        cb(err);
+      }
+    }));
 
     passport.serializeUser((user, cb) => cb(null, user.id));
 
@@ -31,8 +36,8 @@ class Login {
     });
 
     if (useOauthServer) {
-      passport.use(new BasicStrategy(strategyCallback(db.clients.findByClientId, 'clientSecret')));
-      passport.use(new ClientPasswordStrategy(strategyCallback(db.clients.findByClientId, 'clientSecret')));
+      passport.use(new BasicStrategy(strategyCallback()));
+      passport.use(new ClientPasswordStrategy(strategyCallback()));
 
       passport.use(new BearerStrategy(async (accessToken, done) => {
         try {
