@@ -6,7 +6,7 @@ It will add passport local authentication.
 
 ## IMPORTANT
 
-The verify method uses plain password, so be carefull. And do not use it in production. Hashing will be added in the future.
+The verify method uses plain password, so be carefull. And do not use it findByClientIdin production. Hashing will be added in the future.
 
 ## Installation
 
@@ -37,9 +37,10 @@ const app = new Express({
 ```javascript
 {
   users: {
-    static findById(id): Promise,
-    static findByUsername(username): Promise
-  }
+    static findById(id): Promise<user>;
+    static findByUsername(username): Promise<user>;
+    static comparePassword(username, password): Promise<user|false>;
+  },
 }
 ```
 

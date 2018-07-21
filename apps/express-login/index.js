@@ -5,10 +5,9 @@ const ClientPasswordStrategy = require('passport-oauth2-client-password').Strate
 const BearerStrategy = require('passport-http-bearer').Strategy;
 
 function strategyCallback() {
-  return async (id, secret, cb) => {
+  return async (clientId, secret, cb) => {
     try {
-      const client = await db.clients.findByClientId(id);
-      cb(null, (!client || client.clientSecret !== secret) ? false : client);
+      cb(null, await db.clients.compareSecret(clientId, secret));
     } catch (err) {
       cb(err);
     }
