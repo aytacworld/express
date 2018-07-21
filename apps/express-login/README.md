@@ -38,46 +38,9 @@ const app = new Express({
 {
   users: {
     static findById(id): Promise<user>;
-    static findByUsername(username): Promise<user>;
     static comparePassword(username, password): Promise<user|false>;
   },
 }
-```
-
-User structure
-```javascript
-{
-  id: string/ObjectId, // Unique identifier for the user
-  username: string, // Username, be sure to check the uniqueness of the username
-  password: string // The password field is plain text, so you have been warned.
-}
-```
-
-## Example user database (in Memory)
-
-```javascript
-const records = {
-  '1': {id:'1', username:'bob', password:'secret'},
-  '2': {id:'2', username:'jake', password:'blablabla'}
-};
-class Users {
-  static async findById(id) {
-     return new Promise((res, rej) => records[id] ? res(records[id]) : rej(new Error('User ' + id + ' does not exist')));
-  }
-
-  static async findByUsername(username) {
-    return new Promise((res) => {
-      for (const id in records) {
-        if (records[id].username === username) {
-          return res(records[id]);
-        }
-      }
-      return res();
-    });
-  }
-}
-
-module.exports = { users: Users };
 ```
 
 ## MIT License
