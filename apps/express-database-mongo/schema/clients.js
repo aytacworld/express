@@ -35,6 +35,54 @@ function createSchema(conn) {
           });
       });
     }
+
+    static comparePassword(clientId, secret) {
+      return new Promise(async (resolve, reject) => {
+        const client = await ClientCollection.findByClientId(clientId);
+        if (!client) return reject(new Error('Client not found'));
+        return resolve(client.clientSecret === secret ? client : false);
+      });
+    }
+
+    static updateClient(clientId, name, secret, redirectUrl, isTrusted) {
+      return new Promise(async (resolve, reject) => {
+        const client = await ClientCollection.findByClientId(clientId);
+        if (!client) return reject(new Error('Client not found'));
+        client.name = name;
+        client.clientSecret = secret;
+        client.redirectUrl = redirectUrl;
+        client.isTrusted = isTrusted;
+        return client.save((err) => {
+          if (err) return reject(err);
+          return resolve();
+        });
+      });
+    }
+
+    static addClient(clientId, name, secret, redirectUrl, isTrusted) {
+      return new Promise(async (resolve, reject) => {
+        const client = await ClientCollection.findByClientId(clientId);
+        if (client) return reject(new Error('Client already exists'));
+        const newClient = new Client({
+          clientId, name, secret, redirectUrl, isTrusted,
+        });
+        return newClient.save((err) => {
+          if (err) return reject(err);
+          return resolve();
+        });
+      });
+    }
+
+    static deleteClient(clientId) {
+      return new Promise((resolve, reject) => {
+        Client.findOne({ clientId })
+          .remove()
+          .exec((err) => {
+            if (err) return reject(err);
+            return resolve();
+          });
+      });
+    }
   }
 
   return ClientCollection;

@@ -28,6 +28,86 @@ const app = new Express({
 });
 ```
 
+## Schemas and Methods
+
+### Users
+#### Schema
+```js
+{
+  username: String,
+  password: String
+}
+```
+#### Methods
+```js
+{
+  static findById(id): Promise<user>;
+  static findByUsername(username): Promise<user>;
+  static comparePassword(username, password): Promise<user|false>;
+  static updateUser(username, password): Promise<void>;
+  static addUser(username, password): Promise<void>;
+  static deleteUser(username): Promise<void>;
+}
+```
+### Clients
+#### Schema
+```js
+{
+  name: String,
+  clientId: String,
+  clientSecret: String,
+  redirectUrl: String,
+  isTrusted: Boolean,
+}
+```
+#### Methods
+```js
+{
+  static findById(id): Promise<client>;
+  static findByClientId(clientId): Promise<client>;
+  static compareSecret(username, secret): Promise<client|false>;
+  static updateClient(clientId, name, secret, redirectUrl, isTrusted): Promise<void>;
+  static addClient(clientId, name, secret, redirectUrl, isTrusted): Promise<void>;
+  static deleteClient(clientId): Promise<void>;
+}
+```
+
+### Accesstokens
+#### Schema
+```js
+{
+  token: String,
+  userId: String,
+  clientId: String,
+}
+```
+#### Methods
+```js
+{
+  static find(key): Promise<accesstoken>;
+  static findByUserIdAndClientId(userId, clientId): Promise<accesstoken>;
+  static save(token, userId, clientId): Promise<void>;
+}
+```
+
+### AuthorizationCode
+#### Schema
+```js
+{
+  code: String,
+  userId: String,
+  clientId: String,
+  redirectUri: String,
+}
+```
+#### Methods
+```js
+{
+  static find(key): Promise<authorizationcode>;
+  static save(code, clientId, redirectUri, userId): Promise<void>;
+}
+```
+
 ## MIT License
 
 Copyright (c) 2018 Adem Aytaç

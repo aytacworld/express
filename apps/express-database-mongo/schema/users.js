@@ -16,7 +16,7 @@ function createSchema(conn) {
   const User = conn.model('User', UserSchema);
 
   class UserCollection {
-    static async findById(id) {
+    static findById(id) {
       return new Promise((resolve, reject) => {
         User.findById(id)
           .exec((err, user) => {
@@ -26,7 +26,7 @@ function createSchema(conn) {
       });
     }
 
-    static async findByUsername(username) {
+    static findByUsername(username) {
       return new Promise((resolve, reject) => {
         User.findOne({ username })
           .exec((err, user) => {
@@ -36,7 +36,7 @@ function createSchema(conn) {
       });
     }
 
-    static async comparePassword(username, password) {
+    static comparePassword(username, password) {
       return new Promise(async (resolve, reject) => {
         const user = await UserCollection.findByUsername(username);
         if (!user) return reject(new Error('User not found'));
@@ -45,7 +45,7 @@ function createSchema(conn) {
       });
     }
 
-    static async changePassword(username, password) {
+    static updateUser(username, password) {
       return new Promise(async (resolve, reject) => {
         const user = await UserCollection.findByUsername(username);
         if (!user) return reject(new Error('User not found'));
@@ -57,7 +57,7 @@ function createSchema(conn) {
       });
     }
 
-    static async addUser(username, password) {
+    static addUser(username, password) {
       return new Promise(async (resolve, reject) => {
         const user = await UserCollection.findByUsername(username);
         if (user) return reject(new Error('User already exists'));
@@ -69,13 +69,13 @@ function createSchema(conn) {
       });
     }
 
-    static async deleteUser(username) {
+    static deleteUser(username) {
       return new Promise((resolve, reject) => {
         User.findOne({ username })
           .remove()
-          .exec((err, user) => {
+          .exec((err) => {
             if (err) return reject(err);
-            return resolve(user);
+            return resolve();
           });
       });
     }
