@@ -1,6 +1,6 @@
 {
   "name": "@aytacworld/express-oauth",
-  "version": "1.1.1",
+  "version": "1.2.1",
   "description": "Adding oauth server capability for express",
   "main": "index.js",
   "repository": "https://github.com/aytacworld/express",

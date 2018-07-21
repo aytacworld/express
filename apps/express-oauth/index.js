@@ -86,16 +86,16 @@ class OAuth2 {
       async (client, username, password, scope, done) => {
         try {
           // Validate the client
-          const localClient = await this.db.clients.findByClientId(client.clientId);
-          if (!localClient || localClient.clientSecret !== client.clientSecret) done(null, false);
+          let match = await this.db.clients.compareSecret(client.clientId, client.clientSecret);
+          if (!match) done(null, false);
           else {
             // Validate the user
-            const user = await this.db.users.findByUsername(username);
-            if (!user || user.password !== password) done(null, false);
+            match = await this.db.users.comparePassword(username, password);
+            if (!match) done(null, false);
             else {
               // Everything validated, return the token
               const token = Private.getUid(256);
-              await this.db.accessTokens.save(token, user.id, client.clientId);
+              await this.db.accessTokens.save(token, match.id, client.clientId);
               done(null, token);
             }
           }
@@ -108,8 +108,8 @@ class OAuth2 {
     server.exchange(oauth2orize.exchange.clientCredentials(async (client, scope, done) => {
       try {
         // Validate the client
-        const localClient = await this.db.clients.findByClientId(client.clientId);
-        if (!localClient || localClient.clientSecret !== client.clientSecret) done(null, false);
+        const match = await this.db.clients.compareSecret(client.clientId, client.clientSecret);
+        if (!match) done(null, false);
         else {
           // Everything validated, return the token
           const token = Private.getUid(256);
