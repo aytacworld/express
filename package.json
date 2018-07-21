@@ -3,9 +3,13 @@
   "repository": "https://github.com/aytacworld/express",
   "author": "Adem Aytaç <adem@aytacworld.com> (https://aytacworld.com)",
   "license": "MIT",
-  "dependencies": {
-  },
+  "dependencies": {},
   "workspaces": [
     "apps/*"
-  ]
+  ],
+  "devDependencies": {
+    "eslint": "4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0"
+  }
 }

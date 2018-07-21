@@ -2,6 +2,7 @@ const oauth2orize = require('oauth2orize');
 const passport = require('passport');
 const login = require('connect-ensure-login');
 const express = require('express');
+
 const router = express.Router();
 
 class Private {
@@ -10,12 +11,12 @@ class Private {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charsLength = chars.length;
 
-    for (let i = 0; i < length; ++i) {
+    for (let i = 0; i < length; i += 1) {
       uid += chars[this.getRandomInt(0, charsLength - 1)];
     }
 
     return uid;
-  };
+  }
 
   /**
    * Return a random int, used by `Private.getUid()`.
@@ -69,7 +70,8 @@ class OAuth2 {
     server.exchange(oauth2orize.exchange.code(async (client, code, redirectUri, done) => {
       try {
         const authCode = await this.db.authorizationCodes.find(code);
-        if (client.id !== authCode.clientId || redirectUri !== authCode.redirectUri) done(null, false);
+        if (client.id !== authCode.clientId
+          || redirectUri !== authCode.redirectUri) done(null, false);
         else {
           const token = Private.getUid(256);
           await this.db.accessTokens.save(token, authCode.userId, authCode.clientId);
@@ -80,31 +82,33 @@ class OAuth2 {
       }
     }));
 
-    server.exchange(oauth2orize.exchange.password(async (client, username, password, scope, done) => {
-      try {
-        // Validate the client
-        const localClient = await this.db.clients.findByClientId(client.clientId)
-        if (!localClient || localClient.clientSecret !== client.clientSecret) done(null, false);
-        else {
-          // Validate the user
-          const user = await this.db.users.findByUsername(username);
-          if (!user || user.password !== password) done(null, false);
+    server.exchange(oauth2orize.exchange.password(
+      async (client, username, password, scope, done) => {
+        try {
+          // Validate the client
+          const localClient = await this.db.clients.findByClientId(client.clientId);
+          if (!localClient || localClient.clientSecret !== client.clientSecret) done(null, false);
           else {
-            // Everything validated, return the token
-            const token = Private.getUid(256);
-            await this.db.accessTokens.save(token, user.id, client.clientId);
-            done(null, token);
+            // Validate the user
+            const user = await this.db.users.findByUsername(username);
+            if (!user || user.password !== password) done(null, false);
+            else {
+              // Everything validated, return the token
+              const token = Private.getUid(256);
+              await this.db.accessTokens.save(token, user.id, client.clientId);
+              done(null, token);
+            }
           }
+        } catch (err) {
+          done(err);
         }
-      } catch (err) {
-        done(err);
-      }
-    }));
+      },
+    ));
 
     server.exchange(oauth2orize.exchange.clientCredentials(async (client, scope, done) => {
       try {
         // Validate the client
-        const localClient = await this.db.clients.findByClientId(client.clientId)
+        const localClient = await this.db.clients.findByClientId(client.clientId);
         if (!localClient || localClient.clientSecret !== client.clientSecret) done(null, false);
         else {
           // Everything validated, return the token
@@ -145,7 +149,8 @@ class OAuth2 {
         // Auto-approve
         if (client.isTrusted) done(null, true);
         else {
-          const token = await this.db.accessTokens.findByUserIdAndClientId(user.id, client.clientId);
+          const token = await this.db.accessTokens
+            .findByUserIdAndClientId(user.id, client.clientId);
           // Auto-approve // Otherwise ask user
           done(null, Boolean(token));
         }
@@ -153,7 +158,7 @@ class OAuth2 {
       (request, response) => {
         response.render('dialog', { transactionId: request.oauth2.transactionID, user: request.user, client: request.oauth2.client });
       },
-    ]
+    ];
   }
 
   decision() {

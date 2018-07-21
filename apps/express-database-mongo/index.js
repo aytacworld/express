@@ -12,7 +12,7 @@ function connectDatabase(connectionString) {
     clients: clientSchema(conn),
     accessTokens: accessTokenSchema(conn),
     authorizationCodes: authorizationCodeSchema(conn),
-  }
+  };
 }
 
 module.exports = connectDatabase;

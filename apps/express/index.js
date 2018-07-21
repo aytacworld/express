@@ -5,14 +5,26 @@ const expressSession = require('express-session');
 const errorHandler = require('errorhandler');
 const cors = require('cors');
 const helmet = require('helmet');
+const http = require('http');
+
+function randomSecret(charQuantity = Math.floor(Math.random() * 20)) {
+  let text = '';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  for (let i = 0; i < charQuantity; i += 1) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+}
 
 module.exports = class Express {
-  constructor(options = {}) {
-
-    let oauth = undefined;
+  constructor(opts = {}) {
+    let oauth;
     const viewLocations = [];
 
     // Checking options
+    const options = opts;
     options.templatePath = options.templatePath || './';
     options.routes = options.routes || [];
     options.staticPath = options.staticPath || false;
@@ -22,13 +34,13 @@ module.exports = class Express {
     options.authDecisionPage = options.authDecisionPage || undefined;
 
     if (options.login) {
-      new options.login.Login(options.authDatabase, Boolean(options.oauthServer));
+      new options.login.Login(options.authDatabase, Boolean(options.oauthServer)); // eslint-disable-line no-new, max-len
     }
 
     if (options.oauthServer) {
-      oauth = new options.oauthServer.module(options.authDatabase);
+      oauth = new options.oauthServer.module(options.authDatabase); // eslint-disable-line new-cap
       options.routes.push({ route: options.oauthServer.route, path: oauth.routes() });
-      if (options.authDecisionPage){
+      if (options.authDecisionPage) {
         viewLocations.push(options.authDecisionPage);
       }
     }
@@ -39,27 +51,31 @@ module.exports = class Express {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(errorHandler());
-    app.use(expressSession({ secret: this.randomSecret(), resave: false, saveUninitialized: false }));
+    app.use(expressSession({
+      secret: randomSecret(),
+      resave: false,
+      saveUninitialized: false,
+    }));
     app.use(cors());
-    app.use(helmet())
+    app.use(helmet());
     app.options('*', cors());
 
-    if (Boolean(options.login)) {
+    if (options.login) {
       app.use(options.login.passport.initialize());
       app.use(options.login.passport.session());
     }
 
-    if (Boolean(options.templatePath)) {
+    if (options.templatePath) {
       viewLocations.push(options.templatePath);
       app.set('views', viewLocations);
       app.set('view engine', 'pug');
     }
 
-    for (let i = 0; i < options.routes.length; i++) {
+    for (let i = 0; i < options.routes.length; i += 1) {
       const route = options.routes[i];
       app.use(route.route, route.path);
     }
-    if (Boolean(options.staticPath)) {
+    if (options.staticPath) {
       app.use(options.staticPath.route, express.static(options.staticPath.path));
     }
 
@@ -68,17 +84,7 @@ module.exports = class Express {
     this.app = app;
   }
 
-  listen(httpOptions, cb = () => { console.log('port', httpOptions) }) {
-    require('http').createServer(this.app).listen(httpOptions, cb);
+  listen(httpOptions, cb = () => { console.log('port', httpOptions); }) { // eslint-disable-line no-console
+    http.createServer(this.app).listen(httpOptions, cb);
   }
-
-  randomSecret(charQuantity = Math.floor(Math.random() * 20)) {
-    let text = "";
-    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (let i = 0; i < charQuantity; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-  }
-}
+};

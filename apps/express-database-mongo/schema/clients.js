@@ -2,7 +2,9 @@ const { Schema } = require('mongoose');
 
 const ClientSchema = new Schema({
   name: { type: String, required: true, trim: true },
-  clientId: { type: String, required: true, trim: true, unique: true },
+  clientId: {
+    type: String, required: true, trim: true, unique: true,
+  },
   clientSecret: { type: String, required: true },
   redirectUrl: { type: String, required: true },
   isTrusted: Boolean,

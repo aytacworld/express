@@ -1,6 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const BasicStrategy = require('passport-http').BasicStrategy;
+const { BasicStrategy } = require('passport-http');
 const ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 
@@ -12,7 +12,7 @@ function strategyCallback(findFunc, secretField) {
     } catch (err) {
       cb(err);
     }
-  }
+  };
 }
 
 class Login {
@@ -39,9 +39,9 @@ class Login {
           const token = await db.accessTokens.find(accessToken);
           if (!token) done(null, false);
           else {
-            const consumer = token.userId ?
-              await db.users.findById(token.userId) :
-              await db.clients.findByClientId(token.clientId);
+            const consumer = token.userId
+              ? await db.users.findById(token.userId)
+              : await db.clients.findByClientId(token.clientId);
             if (!consumer) done(null, false);
             else done(null, consumer, { scope: '*' });
           }
@@ -55,5 +55,5 @@ class Login {
 
 module.exports = {
   Login,
-  passport
+  passport,
 };

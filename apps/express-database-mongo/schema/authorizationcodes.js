@@ -1,7 +1,9 @@
 const { Schema } = require('mongoose');
 
 const AuthorizationCodeSchema = new Schema({
-  code: { type: String, required: true, trim: true, unique: true },
+  code: {
+    type: String, required: true, trim: true, unique: true,
+  },
   clientId: { type: String, required: true },
   redirectUri: { type: String, required: true },
   userId: { type: String, required: true },
@@ -23,8 +25,10 @@ function createSchema(conn) {
     }
 
     static save(code, clientId, redirectUri, userId) {
-      return new Promise((resolve) => {
-        const item = new AuthorizationCode({ code, clientId, redirectUri, userId });
+      return new Promise((resolve, reject) => {
+        const item = new AuthorizationCode({
+          code, clientId, redirectUri, userId,
+        });
         item.save((err) => {
           if (err) return reject(err);
           return resolve();
