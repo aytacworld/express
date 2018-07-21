@@ -26,7 +26,7 @@ function createSchema(conn) {
     static findByClientId(clientId) {
       return new Promise((resolve, reject) => {
         Client.findOne({ clientId })
-          .exec((err, user) => {
+          .exec((err, client) => {
             if (err) return reject(err);
             if (!client) return reject(new Error('Client Not Found'));
             return resolve(client);

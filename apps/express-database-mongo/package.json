@@ -1,6 +1,6 @@
 {
   "name": "@aytacworld/express-database-mongo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Contains the default authentication and oauth database for @aytacworld/express apps",
   "main": "index.js",
   "repository": "https://github.com/aytacworld/express",
