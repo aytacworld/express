@@ -36,7 +36,7 @@ function createSchema(conn) {
       });
     }
 
-    static comparePassword(clientId, secret) {
+    static compareSecret(clientId, secret) {
       return new Promise(async (resolve, reject) => {
         const client = await ClientCollection.findByClientId(clientId);
         if (!client) return reject(new Error('Client not found'));
