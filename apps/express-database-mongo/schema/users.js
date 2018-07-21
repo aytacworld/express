@@ -42,7 +42,7 @@ function createSchema(conn) {
         const user = await UserCollection.findByUsername(username);
         if (!user) return reject(new Error('User not found'));
         const match = await bcrypt.compare(password, user.password);
-        return resolve(match);
+        return resolve(match ? user : false);
       });
     }
 
