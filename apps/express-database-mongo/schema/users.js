@@ -7,7 +7,6 @@ const UserSchema = new Schema({
 });
 
 UserSchema.pre('save', async function presave(next) {
-  // save the hashed version of the password
   const salt = await bcrypt.genSalt(10); // TODO make saltRounds dynamic or from config.
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -46,9 +45,40 @@ function createSchema(conn) {
       });
     }
 
-    // static async addUser(username, password) {
-    //   throw new Error('Not implemented yet');
-    // }
+    static async changePassword(username, password) {
+      return new Promise(async (resolve, reject) => {
+        const user = await UserCollection.findByUsername(username);
+        if (!user) return reject(new Error('User not found'));
+        user.password = password;
+        return user.save((err) => {
+          if (err) return reject(err);
+          return resolve();
+        });
+      });
+    }
+
+    static async addUser(username, password) {
+      return new Promise(async (resolve, reject) => {
+        const user = await UserCollection.findByUsername(username);
+        if (user) return reject(new Error('User already exists'));
+        const newUser = new User({ username, password });
+        return newUser.save((err) => {
+          if (err) return reject(err);
+          return resolve();
+        });
+      });
+    }
+
+    static async deleteUser(username) {
+      return new Promise((resolve, reject) => {
+        User.findOne({ username })
+          .remove()
+          .exec((err, user) => {
+            if (err) return reject(err);
+            return resolve(user);
+          });
+      });
+    }
   }
 
   return UserCollection;
