@@ -155,8 +155,8 @@ class OAuth2 {
           done(null, Boolean(token));
         }
       }),
-      (request, response) => {
-        response.render('dialog', { transactionId: request.oauth2.transactionID, user: request.user, client: request.oauth2.client });
+      (req, res) => {
+        res.render('dialog', { transactionId: req.oauth2.transactionID, user: req.user, client: req.oauth2.client });
       },
     ];
   }

@@ -10,13 +10,13 @@ function createSchema() {
     }
 
     static findByUserIdAndClientId(userId, clientId) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const tokenKeys = Object.keys(tokens);
         for (let i = 0; i < tokenKeys; i += 1) {
           const token = tokens[tokenKeys[i]];
           if (token.userId === userId && token.clientId === clientId) return resolve(token);
         }
-        return reject(new Error('Token Not Found'));
+        return resolve(null);
       });
     }
 

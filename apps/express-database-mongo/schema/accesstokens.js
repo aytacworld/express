@@ -26,7 +26,6 @@ function createSchema(conn) {
         AccessToken.findOne({ userId, clientId })
           .exec((err, token) => {
             if (err) return reject(err);
-            if (!token) return reject(new Error('Token Not Found'));
             return resolve(token);
           });
       });
