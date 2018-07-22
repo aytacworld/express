@@ -3,9 +3,13 @@
   "repository": "https://github.com/aytacworld/express",
   "author": "Adem Aytaç <adem@aytacworld.com> (https://aytacworld.com)",
   "license": "MIT",
+  "scripts": {
+    "start": "node demo/start"
+  },
   "dependencies": {},
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "demo"
   ],
   "devDependencies": {
     "eslint": "4.19.1",

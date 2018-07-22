@@ -1,0 +1,14 @@
+extends ./layout.pug
+
+block content
+  h1 Please sign in
+  form(method='POST' action='/login')
+    input(type='hidden' name="returnTo" value=returnTo)
+    .form-control
+      label Username
+        input(type='text' placeholder='Username' name='username' required)
+    .form-control
+      label Password
+        input(type='password' placeholder='Password' name='password' required)
+    .form-control
+      button(type='submit') Login
