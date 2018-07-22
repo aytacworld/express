@@ -64,7 +64,7 @@ function createSchema(conn) {
         const client = await ClientCollection.findByClientId(clientId);
         if (client) return reject(new Error('Client already exists'));
         const newClient = new Client({
-          clientId, name, secret, redirectUrl, isTrusted,
+          clientId, name, clientSecret: secret, redirectUrl, isTrusted,
         });
         return newClient.save((err) => {
           if (err) return reject(err);

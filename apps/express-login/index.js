@@ -4,7 +4,7 @@ const { BasicStrategy } = require('passport-http');
 const ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 
-function strategyCallback() {
+function strategyCallback(db) {
   return async (clientId, secret, cb) => {
     try {
       cb(null, await db.clients.compareSecret(clientId, secret));
@@ -35,8 +35,8 @@ class Login {
     });
 
     if (useOauthServer) {
-      passport.use(new BasicStrategy(strategyCallback()));
-      passport.use(new ClientPasswordStrategy(strategyCallback()));
+      passport.use(new BasicStrategy(strategyCallback(db)));
+      passport.use(new ClientPasswordStrategy(strategyCallback(db)));
 
       passport.use(new BearerStrategy(async (accessToken, done) => {
         try {

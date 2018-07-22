@@ -40,7 +40,7 @@ function createSchema() {
         const client = clients[clientId];
         if (client) return reject(new Error('Client already exists'));
         clients[clientId] = {
-          id: clientId, clientId, name, secret, redirectUrl, isTrusted,
+          id: clientId, clientId, name, clientSecret: secret, redirectUrl, isTrusted,
         };
         return resolve();
       });
