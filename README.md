@@ -9,11 +9,12 @@ This repo contains the following packages
 - @aytacworld/express-oauth
   Adding a oauth server code
 - @aytacworld/express-database-mongo
-  Database needed for login and oauth plugins
+  Database needed for login and oauth plugins using mongodb as database
+- @aytacworld/express-database-memory (!!! DO NOT USE IN PRODUCTION)
+  Database needed for login and oauth plugins using in-memory as database
 
 ## TODO
 
-- eslint all files
 - testing
 
 ## MIT License
