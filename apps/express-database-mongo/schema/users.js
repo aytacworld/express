@@ -37,9 +37,9 @@ function createSchema(conn) {
     }
 
     static comparePassword(username, password) {
-      return new Promise(async (resolve, reject) => {
+      return new Promise(async (resolve) => {
         const user = await UserCollection.findByUsername(username);
-        if (!user) return reject(new Error('User not found'));
+        if (!user) return resolve(false);
         const match = await bcrypt.compare(password, user.password);
         return resolve(match ? user : false);
       });

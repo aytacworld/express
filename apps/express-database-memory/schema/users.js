@@ -1,30 +1,24 @@
 const users = {};
 
-function sendUser(id) {
-  return {
-    username: users[id].username,
-  };
-}
-
 function createSchema() {
   class UserCollection {
     static findById(id) {
       return new Promise((resolve) => {
-        resolve(sendUser(id));
+        resolve(users[id]);
       });
     }
 
     static findByUsername(username) {
       return new Promise((resolve) => {
-        resolve(sendUser(username));
+        resolve(users[username]);
       });
     }
 
     static comparePassword(username, password) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const user = users[username];
-        if (!user) return reject(new Error('User not found'));
-        return resolve(user.password === password ? sendUser(username) : false);
+        if (!user) return resolve(false);
+        return resolve(user.password === password ? user : false);
       });
     }
 
@@ -42,7 +36,7 @@ function createSchema() {
       return new Promise((resolve, reject) => {
         const user = users[username];
         if (user) return reject(new Error('User already exists'));
-        users[username] = { username, password };
+        users[username] = { id: username, username, password };
         return resolve();
       });
     }

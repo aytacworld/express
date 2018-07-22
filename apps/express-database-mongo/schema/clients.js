@@ -37,9 +37,9 @@ function createSchema(conn) {
     }
 
     static compareSecret(clientId, secret) {
-      return new Promise(async (resolve, reject) => {
+      return new Promise(async (resolve) => {
         const client = await ClientCollection.findByClientId(clientId);
-        if (!client) return reject(new Error('Client not found'));
+        if (!client) return resolve(false);
         return resolve(client.clientSecret === secret ? client : false);
       });
     }

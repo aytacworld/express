@@ -47,6 +47,11 @@ module.exports = class Express {
 
     const app = express();
 
+    app.use((req, res, next) => {
+      console.log(req.method, req.path); // eslint-disable-line no-console
+      next();
+    });
+
     app.use(cookieParser());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));

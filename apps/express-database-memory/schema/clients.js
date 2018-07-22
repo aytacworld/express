@@ -15,9 +15,9 @@ function createSchema() {
     }
 
     static compareSecret(clientId, secret) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const client = clients[clientId];
-        if (!client) return reject(new Error('Client not found'));
+        if (!client) return resolve(false);
         return resolve(client.clientSecret === secret ? client : false);
       });
     }
