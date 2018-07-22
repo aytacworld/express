@@ -5,6 +5,7 @@ const ExpressOauth = require('../apps/express-oauth');
 
 const db = require('../apps/express-database-memory')();
 const mainRoute = require('./route/mainroute');
+const apiRoute = require('./route/apiroute');
 
 const PORT = 3000;
 
@@ -15,6 +16,7 @@ const app = new Express({
   templatePath: path.resolve(__dirname, 'views'),
   routes: [
     { route: '/', path: mainRoute },
+    { route: '/api', path: apiRoute },
   ],
   staticPath: { route: '/public', path: path.resolve(__dirname, 'public') },
   login: ExpressLogin,

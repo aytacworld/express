@@ -3,5 +3,12 @@ extends ./layout.pug
 block content
   h1 Welcome to this demo page
 
-  p To test oauth flow, you need to do this call
-    a(href='http://localhost:3000/auth?client_id=myid-123&redirect_uri=https://www.duckduckgo.com&state=justarandomstatevalue&response_type=code') Link
+  p First get token using this url <br/>
+    | GET http://localhost:3000/auth?client_id=myid-123&redirect_uri=https://www.duckduckgo.com&state=justarandomstatevalue&response_type=code <br/>
+    | login using jack as username and secret as password
+  p Then do a post call to <br/>
+    | POST /api/get-info HTTP/1.1 <br/>
+    | Host: localhost:3000 <br/>
+    | Authorization: Bearer {the token you retrieved from the first call}
+
+
