@@ -49,7 +49,8 @@ app.listen(process.env.PORT);
   login: require('@aytacworld/express-login'), // This is the passport module to require, default false
   oauthServer: {route: string, module: require('@aytacworld/express-oauth')}, // This is the oauth serverside part, default false,
   authDatabase: Database object, // This is the auth database to make the login/oauth token exchange happen, it is mandatory if you use login and/or oauthServer, default false
-  authDecisionPage: string // This is the path to decisions pug file
+  authDecisionPage: string, // This is the path to decisions pug file
+  sessionStore: SessionStore object, // This is the session database, default false
 }
 ```
 

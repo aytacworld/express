@@ -16,6 +16,16 @@ This repo contains the following packages
 ## TODO
 
 - testing
+- @aytacworld/express
+  - implement authDecisionPage logic
+- @aytacworld/express-database-mongo
+  - add applications collection
+  - ask for application name when initiating the db connection
+  - external addApp will add the application name in the users applications list, and with extra parameter to create the user if it doesn’t exists.
+  - delete expired tokens
+  - add refresh token stuff, so the user can recreate access tokens
+- @aytacworld/express-oauth-admin
+  - this is a new project to maintain the oauth administration
 
 ## MIT License
 

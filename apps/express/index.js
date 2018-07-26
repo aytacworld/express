@@ -32,6 +32,7 @@ module.exports = class Express {
     options.oauthServer = options.oauthServer || false;
     options.authDatabase = options.authDatabase || false;
     options.authDecisionPage = options.authDecisionPage || undefined;
+    options.sessionStore = options.sessionStore || false;
 
     if (options.login) {
       new options.login.Login(options.authDatabase, Boolean(options.oauthServer)); // eslint-disable-line no-new, max-len
@@ -56,11 +57,14 @@ module.exports = class Express {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(errorHandler());
-    app.use(expressSession({
-      secret: randomSecret(),
-      resave: false,
-      saveUninitialized: false,
-    }));
+    const sessionOptions = { secret: randomSecret(), resave: false, saveUninitialized: false };
+    if (options.sessionStore) {
+      sessionOptions.cookie = { maxAge: 1000 * 60 * 60 * 24 * 7 }; // 1 week
+      sessionOptions.store = options.sessionStore.getStore(expressSession);
+      sessionOptions.resave = true;
+      sessionOptions.saveUninitialized = true;
+    }
+    app.use(expressSession(sessionOptions));
     app.use(cors());
     app.use(helmet());
     app.options('*', cors());
