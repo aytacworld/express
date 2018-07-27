@@ -5,7 +5,7 @@ const accessTokenSchema = require('./schema/accesstokens');
 const authorizationCodeSchema = require('./schema/authorizationcodes');
 const MongoSession = require('./utils/session-store');
 
-function connectDatabase(connectionString, applicationName) {
+function connectDatabase(applicationName, connectionString, dbName, collection) {
   const conn = mongoose.createConnection(connectionString, { useNewUrlParser: true });
 
   return {
@@ -13,7 +13,7 @@ function connectDatabase(connectionString, applicationName) {
     clients: clientSchema(conn),
     accessTokens: accessTokenSchema(conn),
     authorizationCodes: authorizationCodeSchema(conn),
-    sessionStore: new MongoSession(connectionString),
+    sessionStore: new MongoSession(connectionString, dbName, collection),
   };
 }
 

@@ -1,9 +1,10 @@
-const assert = require('assert');
 const mongoSession = require('connect-mongodb-session');
 
 class MongoStore {
-  constructor(connectionString) {
+  constructor(connectionString, database, collection = 'mysessions') {
     this.connectionString = connectionString;
+    this.database = database;
+    this.collection = collection;
   }
 
   getStore(session) {
@@ -11,19 +12,13 @@ class MongoStore {
 
     const store = new MongoDBStore({
       uri: this.connectionUrl,
-      collection: 'mysessions',
-    });
-
-    store.on('connected', () => {
-      console.log('session db connected'); // eslint-disable-line
-      // eslint-disable-next-line
-      store.client; // The underlying MongoClient object from the MongoDB driver
+      databaseName: this.database,
+      collection: this.collection,
     });
 
     // Catch errors
     store.on('error', (error) => {
-      assert.ifError(error);
-      assert.ok(false);
+      throw new Error(error);
     });
 
     return store;
