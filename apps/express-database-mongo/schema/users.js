@@ -73,27 +73,60 @@ function createSchema(conn, applicationName) {
       });
     }
 
-    static addUser(username, password) {
+    static addApplication(username, createUser = false, password = undefined) {
       return new Promise(async (resolve, reject) => {
         try {
           const user = await UserCollection.findByUsernameOnly(username);
           if (user) {
             if (user.applications
               && user.applications.find(i => i === applicationName) !== undefined) {
-              throw new Error('User already exists for application!');
+              throw new Error('User already have application');
             }
             user.applications.push(applicationName);
             user.save((err) => {
               if (err) throw err;
               resolve();
             });
+          } else if (createUser) {
+            await this.addUser(username, password);
+            resolve();
           } else {
-            const newUser = new User({ username, password, applications: applicationName });
-            newUser.save((err) => {
-              if (err) throw err;
-              resolve();
-            });
+            throw new Error('User doesn\'t exists');
           }
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+
+    static deleteApplication(username) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const user = await UserCollection.findByUsername(username);
+          if (!user) return resolve();
+          user.applications = user.applications.filter(a => a !== applicationName);
+          return user.save((err) => {
+            if (err) return reject(err);
+            return resolve();
+          });
+        } catch (e) {
+          return reject(e);
+        }
+      });
+    }
+
+    static addUser(username, password) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const user = await UserCollection.findByUsernameOnly(username);
+          if (user) {
+            throw new Error('User already exists!');
+          }
+          const newUser = new User({ username, password, applications: applicationName });
+          newUser.save((err) => {
+            if (err) throw err;
+            resolve();
+          });
         } catch (err) {
           reject(err);
         }
@@ -101,14 +134,13 @@ function createSchema(conn, applicationName) {
     }
 
     static deleteUser(username) {
-      return new Promise(async (resolve, reject) => {
-        const user = await UserCollection.findByUsername(username);
-        if (!user) return resolve();
-        user.applications = user.applications.filter(a => a !== applicationName);
-        return user.save((err) => {
-          if (err) return reject(err);
-          return resolve();
-        });
+      return new Promise((resolve, reject) => {
+        User.findOne({ username })
+          .remove()
+          .exec((err) => {
+            if (err) return reject(err);
+            return resolve();
+          });
       });
     }
   }
