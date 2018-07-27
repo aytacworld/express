@@ -31,13 +31,23 @@ function createSchema(conn, applicationName) {
       });
     }
 
-    static findByUsername(username) {
+    static findByUsernameOnly(username, extraQuery = {}) {
       return new Promise((resolve, reject) => {
-        User.findOne({ username, applications: applicationName })
+        User.findOne(Object.assign({ username }, extraQuery))
           .exec((err, user) => {
             if (err) return reject(err);
             return resolve(user);
           });
+      });
+    }
+
+    static findByUsername(username) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          resolve(UserCollection.findByUsernameOnly(username, { applications: applicationName }));
+        } catch (err) {
+          reject(err);
+        }
       });
     }
 
@@ -65,26 +75,28 @@ function createSchema(conn, applicationName) {
 
     static addUser(username, password) {
       return new Promise(async (resolve, reject) => {
-        User.findOne({ username })
-          .exec((err, user) => {
-            if (err) return reject(err);
-            if (user) {
-              if (user.applications
-                && user.applications.find(i => i === applicationName) !== undefined) {
-                return reject(new Error('User already exists for application!'));
-              }
-              user.applications.push(applicationName);
-              return user.save((err2) => {
-                if (err2) return reject(err2);
-                return resolve();
-              });
+        try {
+          const user = await UserCollection.findByUsernameOnly(username);
+          if (user) {
+            if (user.applications
+              && user.applications.find(i => i === applicationName) !== undefined) {
+              throw new Error('User already exists for application!');
             }
-            const newUser = new User({ username, password, applications: applicationName });
-            return newUser.save((err3) => {
-              if (err3) return reject(err3);
-              return resolve();
+            user.applications.push(applicationName);
+            user.save((err) => {
+              if (err) throw err;
+              resolve();
             });
-          });
+          } else {
+            const newUser = new User({ username, password, applications: applicationName });
+            newUser.save((err) => {
+              if (err) throw err;
+              resolve();
+            });
+          }
+        } catch (err) {
+          reject(err);
+        }
       });
     }
 
