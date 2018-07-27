@@ -4,6 +4,8 @@ This module contains the database models(Schema) for [@aytacworld/express-login]
 
 When requiring just past in the connectionstring to your mongoDB Server.
 
+You can also use mongo as your session storage.
+
 ## Installation
 
 using npm
@@ -19,11 +21,13 @@ using yarn
 app.js
 ```javascript
 ...
-const ExpressDatabase = require('@aytacworld/express-database-mongo')('mongodb://localhost:27017/auth');
+const ExpressDatabase = require('@aytacworld/express-database-mongo')('appname', 'mongodb://localhost:27017/auth', 'sessionDbName', 'sessionCollectionName');
 
 const app = new Express({
   ...
   authDatabase: ExpressDatabase,
+  // If you want to use mongo Session storage, add the following
+  sessionStore: ExpressDatabase.sesstionStore
   ...
 });
 ```
