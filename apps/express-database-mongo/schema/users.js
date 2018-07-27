@@ -4,11 +4,15 @@ const { Schema } = require('mongoose');
 const UserSchema = new Schema({
   username: { type: String, required: true, trim: true },
   password: { type: String, required: true },
+  hashed: { type: Boolean, default: false },
 });
 
 UserSchema.pre('save', async function presave(next) {
-  const salt = await bcrypt.genSalt(10); // TODO make saltRounds dynamic or from config.
-  this.password = await bcrypt.hash(this.password, salt);
+  if (!this.hashed) {
+    const salt = await bcrypt.genSalt(10); // TODO make saltRounds dynamic or from config.
+    this.password = await bcrypt.hash(this.password, salt);
+    this.hashed = true;
+  }
   next();
 });
 
@@ -50,6 +54,7 @@ function createSchema(conn) {
         const user = await UserCollection.findByUsername(username);
         if (!user) return reject(new Error('User not found'));
         user.password = password;
+        user.hashed = false;
         return user.save((err) => {
           if (err) return reject(err);
           return resolve();
