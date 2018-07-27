@@ -11,7 +11,7 @@ class MongoStore {
     const MongoDBStore = mongoSession(session);
 
     const store = new MongoDBStore({
-      uri: this.connectionUrl,
+      uri: this.connectionString,
       databaseName: this.database,
       collection: this.collection,
     });

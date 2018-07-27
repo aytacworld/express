@@ -19,7 +19,6 @@ function createSchema(conn) {
         Client.findById(id)
           .exec((err, client) => {
             if (err) return reject(err);
-            if (!client) return reject(new Error('Client Not Found'));
             return resolve(client);
           });
       });
@@ -30,7 +29,6 @@ function createSchema(conn) {
         Client.findOne({ clientId })
           .exec((err, client) => {
             if (err) return reject(err);
-            if (!client) return reject(new Error('Client Not Found'));
             return resolve(client);
           });
       });
