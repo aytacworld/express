@@ -7,8 +7,17 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Demo",
       "program": "${workspaceFolder}/demo/start"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Demo:mongo",
+      "program": "${workspaceFolder}/demo/start",
+      "env": {
+        "DEMO_DB": "mongo"
+      }
     }
   ]
 }

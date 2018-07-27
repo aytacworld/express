@@ -13,6 +13,23 @@ This repo contains the following packages
 - @aytacworld/express-database-memory (!!! DO NOT USE IN PRODUCTION)
   Database needed for login and oauth plugins using in-memory as database
 
+## Demo
+
+### Default
+
+To run the default demo with in-memory-storage, run `yarn start`.
+
+This demo will run the application without external db.
+
+### Mongo
+
+To run the mongo demo, run `yarn start:mongo`.
+
+This demo needs a mongodb server running on localhost:__28018__.
+
+There is a docker-compose to run mongodb server, you can spin it up by running `yarn mongo:up`,
+and kill it by running `yarn mongo:down`.
+
 ## TODO
 
 - testing

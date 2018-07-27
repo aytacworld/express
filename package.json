@@ -4,7 +4,10 @@
   "author": "Adem Aytaç <adem@aytacworld.com> (https://aytacworld.com)",
   "license": "MIT",
   "scripts": {
-    "start": "node demo/start"
+    "start": "node demo/start",
+    "start:mongo": "DEMO_DB='mongo' node demo/start",
+    "mongo:up":"docker-compose -f demo/docker-compose.yml up -d",
+    "mongo:down":"docker-compose -f demo/docker-compose.yml down"
   },
   "dependencies": {},
   "workspaces": [
